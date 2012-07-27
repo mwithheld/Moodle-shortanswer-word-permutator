@@ -1,4 +1,9 @@
-// Create a new YUI instance and populate it with the required modules.
+/**
+ * This is part of the Moodle short answer word permutator
+ * See https://github.com/mwithheld/Moodle-shortanswer-word-permutator
+ */
+
+// Create a new YUI instance and populate it with the required modules
 var permutator = {}; // this holds the permutate object, vars and functions
 window.permutator = permutator;
 YUI().use('node', 'get', 'panel', 'event', 'array-extras', 'node-event-simulate', 'json', function (Y) {
@@ -34,9 +39,10 @@ YUI().use('node', 'get', 'panel', 'event', 'array-extras', 'node-event-simulate'
 
 
 
-        Y.Get.script('../local/permute.js');//, function (err) {
+        Y.Get.script('../local/permute.js'); //Keep for Moodle 2.3, was Y.get.js('../local/permute.js', function (err) {
 
-        /*            if (err) {
+        /* Keep for Moodle 2.3
+                                if (err) {
 
                 Y.log('Error loading JS: ' + err[0].error, 'error');
                 return;
@@ -45,12 +51,16 @@ YUI().use('node', 'get', 'panel', 'event', 'array-extras', 'node-event-simulate'
          */
 
         //Y.log('file.js loaded successfully!');
-        //Y.on('domready', function(e) {
+        //Y.on('domready', function(e) { //Keep for Moodle 2.3
 
         //Y.log('domready fired');
 
+        //used to temporarily store the value during page refreshes reqd for adding empty answer fields
         window.permutator.stringSeparator = '###permuteAddingFields###';
 
+        /**
+         * Set the select box (s) selected item to the matching float value (v)
+         */
         window.permutator.setSelectedIndex = function (s, v) {
             for ( var i = 0; i < s.options.length; i++ ) {
                 if ( parseFloat(s.options[i].value) == parseFloat(v) ) {
@@ -60,21 +70,30 @@ YUI().use('node', 'get', 'panel', 'event', 'array-extras', 'node-event-simulate'
             }
         };
 
+        /**
+         * The form only gives us 5 answer fields to start, but permutations of 3 items = ~16 items
+         */
         window.permutator.addMoreAnswerFields = function() {
             Y.one('#id_answer_0').set('value', window.permutator.stringSeparator+Y.JSON.stringify(window.permutator.results));
             Y.one('#id_addanswers').simulate('click');
         }
-                
+
+        /**
+         * During the page refreshes when adding answer fields to the form, this checks if we can stop adding answer fields
+         */
         window.permutator.startupCheckEnoughAnswerFields = function() {
             if(Y.one('#id_answer_0').get('value').match('^'+window.permutator.stringSeparator)) {
                 window.permutator.results = Y.JSON.parse(Y.one('#id_answer_0').get('value').slice(window.permutator.stringSeparator.length));
-                        
+
                 if(window.permutator.checkEnoughAnswerFields()) {
                     window.permutator.populateAnswers();
                 }
             }
         }
-                
+
+        /**
+         * Counts the # of answer fields and compares to the permutator result count
+         */
         window.permutator.checkEnoughAnswerFields = function() {
             if(window.document.getElementById('id_fraction_'+window.permutator.results.length)==null) {
                 window.permutator.addMoreAnswerFields();
@@ -84,17 +103,20 @@ YUI().use('node', 'get', 'panel', 'event', 'array-extras', 'node-event-simulate'
             }
         }
 
+        /**
+         * Populate the answers into the Moodle form answer + grade fields
+         */
         window.permutator.populateAnswers = function() {
             window.permutator.checkEnoughAnswerFields();
             for(var i=0;i<window.permutator.results.length;i++) {
                 //console.log('Looking to set '+window.permutator.results[i].answer+' with grade='+window.permutator.results[i].grade);
                 Y.one('#id_answer_'+i).set('value', window.permutator.results[i].answer);
-                var select = window.document.getElementById('id_fraction_'+i);                        
+                var select = window.document.getElementById('id_fraction_'+i);
                 window.permutator.setSelectedIndex(select, window.permutator.results[i].grade);
             }
-            window.permutator.panel.hide();                    
+            window.permutator.panel.hide();
         };
-                
+
         window.permutator.startupCheckEnoughAnswerFields();
         //});
 
@@ -116,7 +138,7 @@ YUI().use('node', 'get', 'panel', 'event', 'array-extras', 'node-event-simulate'
                 window.permutator.panel.hide();
             }
         });
-            
+
         //Build + insert the link to this new permutator functionality
         var permutatorLinkNode = Y.Node.create('<div id="permutator_launcher"><a href="#" onclick="window.permutator.panel.render();window.permutator.panel.show();return false;">Use the word list permutator...<a></div>');
         Y.one('#answerhdr_0').insert(permutatorLinkNode, 'before');
