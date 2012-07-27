@@ -14,16 +14,16 @@ YUI().use('node', 'get', 'panel', 'event', 'array-extras', 'node-event-simulate'
         //console.log('Hey!  You are adding or editing a shortanswer Q.  Let me enhance that functionality for you...');
 
         //Build the form
-        var formNode = Y.Node.create('<div id="panelContent"> \
+        var formNode = Y.Node.create('<div id="permutator_panel"> \
     <div class="yui3-widget-bd"> \
     <p>This tool will output all possible combinations of those words, including partials and singles, ready for pasting into a Moodle short answer question.</p> \
     <p>Enter a few words separated by commas (e.g. lies, damned lies, statistics).  More than 4 words will probably cause your browser to crash.</p> \
     <form id="frm_permutations"> \
         <fieldset> \
-            <input id="wordinput" type="text" onkeyup="window.permutator.timeAndGo();" /> \
+            <input id="permutator_input" type="text" onkeyup="window.permutator.timeAndGo();" /> \
         </fieldset> \
     </form> \
-    <div id="result"></div> \
+    <div id="permutator_output"></div> \
     </div></div>');
 
         //Add the form to the page, modal

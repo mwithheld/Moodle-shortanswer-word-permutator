@@ -1,6 +1,6 @@
 permutator = window.permutator;
-permutator.input=document.getElementById('wordinput');
-permutator.output=document.getElementById('result');
+permutator.input=document.getElementById('permutator_input');
+permutator.output=document.getElementById('permutator_output');
 permutator.tabs = 0;
 permutator.debug = false;
 permutator.timeout;
@@ -11,7 +11,7 @@ permutator.unique = function(arr) {
     for(i in o) r.push(o[i]);
     return r;
 };
-    
+
 permutator.flatten = function (array){
     if(!permutator.is_array(array)) {
         return array;
@@ -136,8 +136,8 @@ permutator.timeAndGo = function () {
 }
 
 permutator.startPermute = function () {
-    permutator.input=document.getElementById('wordinput');
-    permutator.output=document.getElementById('result');
+    permutator.input=document.getElementById('permutator_input');
+    permutator.output=document.getElementById('permutator_output');
     if(permutator.input.value.trim().charAt(permutator.input.value.trim().length-1)==',') {
         return false;
     }
@@ -165,7 +165,9 @@ permutator.startPermute = function () {
                 results[i] = new Array(results[i]);
             }
         }
-        results.sort(function(a,b) {return a.length-b.length}).reverse();
+        results.sort(function(a,b) {
+            return a.length-b.length
+            }).reverse();
         //console.log(results);
         var table='';
 
@@ -178,16 +180,16 @@ permutator.startPermute = function () {
             var thisItem = '*'+results[i].join('*')+'*';
             table+='<tr><td>'+(i+1)+'</td><td>'+thisItem+'</td><td>'+((thisGrade*100).toFixed(2))+"%</td></tr>\n";
             results[i] = {
-                answer:thisItem, 
+                answer:thisItem,
                 grade:thisGrade
             };
         }
-        
+
         //Add the 0% item to catch all other entries
         var thisItem = '*';
         permutator.printout(table+'<tr><td>'+(results.length+1)+'</td><td>'+thisItem+"</td><td>None</td></tr>\n");
         results[results.length] = {
-            answer:thisItem, 
+            answer:thisItem,
             grade:'0.0'
         };
         permutator.results = results;
